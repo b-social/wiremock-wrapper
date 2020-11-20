@@ -7,8 +7,9 @@
                  [http-kit "2.3.0"]
                  [freeport "1.0.0"]
                  [b-social/jason "0.1.5"]
-
                  [com.github.tomakehurst/wiremock "2.24.1"]]
+  :deploy-repositories
+  {"releases" {:url "https://repo.clojars.org" :creds :gpg}}
   :repl-options {:init-ns wiremock-wrapper})
 
 
