@@ -79,6 +79,30 @@ Add the following to your `project.clj` file:
                      (count))))))))
 ```
 
+## Debugging
+In case of stubs not match, WireMock provides useful logs, e.g.:
+```
+5366377 [qtp1955035115-183] ERROR WireMock -
+                                               Request was not matched
+                                               =======================
+
+-----------------------------------------------------------------------------------------------------------------------
+| Closest stub                                             | Request                                                  |
+-----------------------------------------------------------------------------------------------------------------------
+                                                           |
+GET                                                        | GET
+/core-baking                                               | /core-banking                                       <<<<< URL does not match
+                                                           |
+Content-Type: application/json                             | Content-Type: application/json
+Accept: application/hal+json                               | Accept: application/hal+json
+                                                           |
+                                                           |
+-----------------------------------------------------------------------------------------------------------------------
+
+```
+So we know in this case that we've made a typo. If this logs are now visible, usually it means that logback wasn't configured properly in test.
+Compare it with this one (which should work), usually missing STDOUT appender: https://github.com/b-social/internal-payment-service/blob/master/test/shared/logback-test.xml#L34
+
 ## License
 
 Copyright © 2020 Kroo Ltd
