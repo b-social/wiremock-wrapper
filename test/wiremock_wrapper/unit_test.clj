@@ -1,22 +1,18 @@
-
 (ns wiremock-wrapper.unit-test
-  (:require [clojure.test :refer :all]
-            [freeport.core :refer [get-free-port!]]
+  (:require [clojure.test :refer [use-fixtures
+                                  deftest is]]
             [org.httpkit.client :as http-kit]
-            [wiremock-wrapper :refer :all])
+            [wiremock-wrapper :as wiremock-wrapper])
   (:import [clojure.lang ExceptionInfo]))
 
-(let [wire-mock-server-port (get-free-port!)
-      wire-mock-config (wire-mock-config wire-mock-server-port)
-      wire-mock-server (new-wire-mock-server wire-mock-config)
-      wire-mock-address (base-url wire-mock-server-port)]
+(let [wire-mock-server-atom (wiremock-wrapper/new-wire-mock-server)
+      wire-mock-address (wiremock-wrapper/base-url wire-mock-server-atom)]
   (use-fixtures :once
-    (with-wire-mock-server wire-mock-server))
+                (wiremock-wrapper/with-wire-mock-server wire-mock-server-atom))
   (use-fixtures :each
-    (with-empty-wire-mock-server wire-mock-server))
+                (wiremock-wrapper/with-empty-wire-mock-server wire-mock-server-atom))
   (deftest unmatched-url-throws-exception
-
     (is (thrown? ExceptionInfo
-          ((with-verify-nounmatched wire-mock-server)
-            (fn []  @(http-kit/get (str wire-mock-address "/url"))))))))
+                 ((wiremock-wrapper/with-verify-nounmatched wire-mock-server-atom)
+                  (fn []  @(http-kit/get (str wire-mock-address "/url"))))))))
 
