@@ -2,7 +2,8 @@
   (:require
     [org.httpkit.client :as http]
     [freeport.core :refer [get-free-port!]]
-    [jason.core :refer [defcoders]])
+    [jason.core :refer [defcoders]]
+    [clojure.tools.logging :as log])
   (:import
     [com.github.tomakehurst.wiremock WireMockServer]
     [com.github.tomakehurst.wiremock.core WireMockConfiguration]))
@@ -91,8 +92,14 @@
    (verify wire-mock-server criteria 1))
   ([wire-mock-server criteria count]
    (let [response @(http/post (counts-url wire-mock-server)
-                     {:body (->wire-json criteria)})]
-     (= count (get (<-wire-json (:body response)) "count")))))
+                     {:body (->wire-json criteria)})
+         response-body (<-wire-json (:body response))
+         is-verified (= count (get response-body "count"))]
+     (when-not is-verified
+       (log/error {:message "request not verified"
+                   :wiremock-server-response-body response-body
+                   :wiremock-server-response-status (:status response)}))
+     is-verified)))
 
 (defn verify-no-unmatched
   [wire-mock-server]
