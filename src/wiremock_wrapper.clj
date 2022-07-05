@@ -8,6 +8,12 @@
     [com.github.tomakehurst.wiremock WireMockServer]
     [com.github.tomakehurst.wiremock.core WireMockConfiguration]))
 
+(def COMMON-HEADERS {"Content-Type" {:equalTo "application/json"}
+                     "Accept" {:equalTo "application/hal+json"}})
+
+(def ADMIN-AUTH-HEADERS
+  (merge COMMON-HEADERS
+         {"Authorization" {:equalTo "ADMIN"}}))
 
 (declare
   ->wire-json
@@ -15,17 +21,23 @@
 
 (defcoders wire)
 
-(defn wire-mock-config
-  ([] (wire-mock-config (get-free-port!)))
-  ([port] (.port (WireMockConfiguration/options) port)))
-
 (defn new-wire-mock-server
-  ([] (new-wire-mock-server (wire-mock-config)))
-  ([config] (atom (new WireMockServer config))))
+  []
+  (->> (get-free-port!)
+       (.port (WireMockConfiguration/options))
+       (new WireMockServer)
+       (atom)))
 
-(defn base-url [wire-mock-server-port]
-  (format "http://localhost:%s"
-    wire-mock-server-port))
+(defn base-url
+  [wire-mock-server-atom]
+  (str "http://localhost:"
+       (.portNumber (.getOptions @wire-mock-server-atom))))
+
+(defn service-mock-base-url
+  [wire-mock-server-atom service-name]
+  (str (base-url wire-mock-server-atom)
+       "/"
+       (name service-name)))
 
 (defn url [wire-mock-server path]
   (.url wire-mock-server path))
@@ -54,11 +66,16 @@
 (defn reset [wire-mock-server]
   @(http/post (reset-url wire-mock-server)))
 
-(defn configure-mocks-on [wire-mock-server mocks]
+(defn configure-mocks-on
+  [wire-mock-server-atom mocks]
   (doseq [mock mocks]
-    (let [mapping (->wire-json mock)]
-      @(http/post (mappings-url wire-mock-server)
-         {:body mapping}))))
+    (let [response (-> (mappings-url @wire-mock-server-atom)
+                       (http/post {:body (->wire-json mock)})
+                       (deref))]
+      (when-not (= (:status response) 201)
+        (->> response
+             (ex-info "Error while adding mapping to WireMock server")
+             (throw))))))
 
 (defn get-mappings-from [wire-mock-server]
   (let [response @(http/get (mappings-url wire-mock-server))
@@ -91,11 +108,13 @@
     (when-not (zero? (count (get body "requests")))
       (throw (ex-info "There were unmatched requests" body)))))
 
-(defn respond-with [response]
+(defn ^:deprecated respond-with
+  [response]
   (fn [mapping]
     (assoc mapping :response response)))
 
-(defn on-request [request & others]
+(defn ^:deprecated on-request
+  [request & others]
   (fn [mapping]
     (reduce
       (fn [m o] (o m))
@@ -127,10 +146,14 @@
       (finally
         (stop @wire-mock-server-atom)))))
 
-(defmacro with-http-mocks [wire-mock-server-atom mocks & body]
+;; Don't use the macro, use configure-mocks-on directly
+;; Macro doesn't create a new scope where mocks are registered on server
+;; They will be there even outside the macro, so it's just adding a new nested level
+(defmacro ^:deprecated with-http-mocks
+  [wire-mock-server-atom mocks & body]
   `(do
      (configure-mocks-on
-       (deref ~wire-mock-server-atom)
+       ~wire-mock-server-atom
        (flatten (map #(% {}) ~mocks)))
      ~@body))
 

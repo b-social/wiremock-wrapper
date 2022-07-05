@@ -1,4 +1,4 @@
-(defproject b-social/wiremock-wrapper "0.1.0"
+(defproject b-social/wiremock-wrapper "0.2.0"
   :description "A clojure wrapper library around Java wiremock library"
   :url "https://github.com/b-social/wiremock-wrapper"
   :license {:name "The MIT License"
@@ -12,5 +12,3 @@
   :deploy-repositories
   {"releases" {:url "https://repo.clojars.org" :creds :gpg}}
   :repl-options {:init-ns wiremock-wrapper})
-
-
