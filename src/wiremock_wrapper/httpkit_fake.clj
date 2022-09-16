@@ -52,7 +52,7 @@
       (dissoc :basic-auth))
     request))
 
-(defn- oath->headers [request]
+(defn- oauth->headers [request]
   (if-let [value (get request :oauth-token)]
     (->
       request
@@ -74,7 +74,7 @@
                  (medley/update-existing :headers allEqualTo)
                  (body->bodyPatterns)
                  (basic-auth->basicAuth)
-                 (oath->headers))
+                 (oauth->headers))
      :response response}))
 
 (defn ->wiremock-stubs
