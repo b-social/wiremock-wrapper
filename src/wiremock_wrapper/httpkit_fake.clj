@@ -2,7 +2,8 @@
   (:require
     [clojure.string :as string]
     [medley.core :as medley]
-    [wiremock-wrapper :as wiremock]))
+    [wiremock-wrapper :as wiremock]
+    [clojure.set :refer [rename-keys]]))
 
 (defn- normalize-mock-url [url wire-mock-server-atom]
   (string/replace-first url (wiremock/base-url wire-mock-server-atom) ""))
@@ -70,6 +71,7 @@
     {:request  (->
                  request
                  (medley/update-existing :url normalize-mock-url wire-mock-server-atom)
+                 (rename-keys {:url :urlPath})
                  (medley/update-existing :method #(-> % name string/upper-case))
                  (medley/update-existing :headers allEqualTo)
                  (body->bodyPatterns)

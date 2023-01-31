@@ -27,14 +27,14 @@
       (is (=
             (httpkit/->wiremock-stub wiremock-server
               [{:url absolute-url} "response-object"])
-            {:request  {:url path}
+            {:request  {:urlPath path}
              :response "response-object"})))
 
     (testing "doesnt change URL if no base-url present"
       (is (=
             (httpkit/->wiremock-stub wiremock-server
               [{:url path} "response-object"])
-            {:request  {:url path}
+            {:request  {:urlPath path}
              :response "response-object"})))))
 
 (deftest matches-headers-individually
@@ -167,7 +167,7 @@
 
             [{:request  {:method "GET"}
               :response "response-object"}
-             {:request  {:url path}
+             {:request  {:urlPath path}
               :response "response-object"}
 
              {:request
