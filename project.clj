@@ -7,7 +7,7 @@
                  [http-kit "2.3.0"]
                  [freeport "1.0.0"]
                  [b-social/jason "0.1.5"]
-                 [com.github.tomakehurst/wiremock "2.24.1"]
+                 [com.github.tomakehurst/wiremock "2.27.2"]
                  [org.clojure/tools.logging "1.2.4"]
                  [medley "1.1.0"]]
   :plugins [[lein-eftest "0.5.3"]
