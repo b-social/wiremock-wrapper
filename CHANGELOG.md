@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file. This change
 
 ## [Unreleased]
 
+## [0.2.3] — 2024-01-09
+
 ## [0.2.3] — 2024-01-08
 
 ## [0.2.3] — 2024-01-08
@@ -35,5 +37,6 @@ All notable changes to this project will be documented in this file. This change
 [0.2.1]: https://github.com/your-name/wiremock-wrapper/compare/0.2.0...0.2.1
 [0.2.2]: https://github.com/your-name/wiremock-wrapper/compare/0.2.1...0.2.2
 [0.2.3]: https://github.com/your-name/wiremock-wrapper/compare/0.2.2...0.2.3
+[0.2.3]: https://github.com/your-name/wiremock-wrapper/compare/0.2.3...0.2.3
 [0.2.3]: https://github.com/your-name/wiremock-wrapper/compare/0.2.3...0.2.3
 [Unreleased]: https://github.com/your-name/wiremock-wrapper/compare/0.2.3...HEAD
