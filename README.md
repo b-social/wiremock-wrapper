@@ -30,15 +30,15 @@ Add the following to your `project.clj` file:
                                :core-banking)})))]
 
   (use-fixtures :once
-                (wiremock/with-wire-mock-server wire-mock-server)
-                (test-system/with-system-lifecycle test-system))
+    (wiremock/with-wire-mock-server wire-mock-server)
+    (test-system/with-system-lifecycle test-system))
   (use-fixtures :each
-                (with-empty-database test-system)
-                ;; Reset WireMock after each test: mocks, requests journal, etc
-                (wiremock/with-empty-wire-mock-server wire-mock-server)
-                ;; It will fail a test if any unexpected request was made to the WireMock server
-                ;; Could potentially catch additional hard to detect bugs
-                (wiremock/with-verify-nounmatched wire-mock-server))
+    (with-empty-database test-system)
+    ;; Reset WireMock after each test: mocks, requests journal, etc
+    (wiremock/with-empty-wire-mock-server wire-mock-server)
+    ;; It will fail a test if any unexpected request was made to the WireMock server
+    ;; Could potentially catch additional hard to detect bugs
+    (wiremock/with-verify-nounmatched wire-mock-server))
 
   (deftest test-example
     (let [deposit-id (data/random-uuid)]
@@ -50,21 +50,21 @@ Add the following to your `project.clj` file:
         [
          ;;
          ;; Discovery stub example
-         {:request {:urlPath "/core-banking"
-                    :method "GET"
-                    :headers {"Content-Type" {:equalTo "application/json"}
-                              "Accept" {:equalTo "application/hal+json"}}}
+         {:request  {:urlPath "/core-banking"
+                     :method  "GET"
+                     :headers {"Content-Type" {:equalTo "application/json"}
+                               "Accept"       {:equalTo "application/hal+json"}}}
           :response {:status 200
                      ;; real body here
-                     :body (-> {} (resource->json))}}
+                     :body   (-> {} (resource->json))}}
 
          ;; Deposit stub example
-         {:request {:url (str "/core-banking/deposits/" deposit-id)
-                    :method "PUT"
-                    ;; common header are defined as a constant in the wiremock-wrapper library
-                    :headers wiremock-wrapper/COMMON-HEADERS
-                    :bodyPatterns [{:equalToJson {:amount 1}
-                                    :ignoreExtraElements true}]}
+         {:request  {:url          (str "/core-banking/deposits/" deposit-id)
+                     :method       "PUT"
+                     ;; common header are defined as a constant in the wiremock-wrapper library
+                     :headers      wiremock-wrapper/COMMON-HEADERS
+                     :bodyPatterns [{:equalToJson         {:amount 1}
+                                     :ignoreExtraElements true}]}
           :response {:status 201}}])
 
       ;; Test body goes here
@@ -75,12 +75,14 @@ Add the following to your `project.clj` file:
       ;; than expected
       (testing "Expected number of request to the WireMock server"
         (is (= 2 (-> (wiremock/get-requests-from @wire-mock-server)
-                     (get "requests")
-                     (count))))))))
+                   (get "requests")
+                   (count))))))))
 ```
 
 ## Debugging
+
 In case of stubs not match, WireMock provides useful logs, e.g.:
+
 ```
 5366377 [qtp1955035115-183] ERROR WireMock -
                                                Request was not matched
@@ -100,12 +102,22 @@ Accept: application/hal+json                               | Accept: application
 -----------------------------------------------------------------------------------------------------------------------
 
 ```
-So we know in this case that we've made a typo. If this logs are now visible, usually it means that logback wasn't configured properly in test.
-Compare it with this one (which should work), usually missing STDOUT appender: https://github.com/b-social/internal-payment-service/blob/master/test/shared/logback-test.xml#L34
+
+So we know in this case that we've made a typo. If this logs are now visible, usually it means that
+logback wasn't configured properly in test.
+Compare it with this one (which should work), usually missing STDOUT
+appender: https://github.com/b-social/internal-payment-service/blob/master/test/shared/logback-test.xml#L34
 
 ## License
 
 Copyright © 2020 Kroo Ltd
 
-Distributed under the terms of the 
+Distributed under the terms of the
 [MIT License](http://opensource.org/licenses/MIT).
+
+## Contributing
+
+* You will need to be a clojars user, and part of the relevant group.
+* You can follow some instructions on how to set up your account
+  locally [here](https://blog.meinside.dev/How-to-Deploy-Library-to-Clojars/).
+    * In short, you need a deploy token to start.
