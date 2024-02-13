@@ -117,7 +117,24 @@ Distributed under the terms of the
 
 ## Contributing
 
-* You will need to be a clojars user, and part of the relevant group.
+* You will need to be a clojars user, and part of the b-social group.
+    * This can be granted by an existing admin.
 * You can follow some instructions on how to set up your account
   locally [here](https://blog.meinside.dev/How-to-Deploy-Library-to-Clojars/).
+    * Note, your gpg key should match your clojars' email address.
     * In short, you need a deploy token to start.
+
+## Releasing
+
+After following the contributing steps, you can release changes using `lein release`. If you
+encounter any failures then individual steps can be performed following the flow in
+the `project.clj`'s `:release-tasks`.
+
+If you encounter the following error when tagging the commits:
+
+```shell
+error: gpg failed to sign the data
+error: unable to sign the tag
+```
+
+then this _may_ be resolved by running `export GPG_TTY=$(tty)`.
