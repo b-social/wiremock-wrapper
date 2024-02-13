@@ -7,11 +7,10 @@
                  [http-kit "2.3.0"]
                  [freeport "1.0.0"]
                  [b-social/jason "0.1.5"]
-                 [org.wiremock/wiremock "3.3.1"]
+                 [com.github.tomakehurst/wiremock "2.27.2"]
                  [org.clojure/tools.logging "1.2.4"]
                  [medley "1.1.0"]]
   :plugins [[lein-eftest "0.5.3"]
-            
             [lein-changelog "0.3.2"]
             [lein-shell "0.5.0"]
             [lein-codox "0.10.7"]]
