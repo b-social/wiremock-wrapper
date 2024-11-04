@@ -126,6 +126,8 @@ Distributed under the terms of the
 
 ## Releasing
 
+Before anything else, make sure you're on the latest.
+
 After following the contributing steps, you can release changes using `lein release`. If you
 encounter any failures then individual steps can be performed following the flow in
 the `project.clj`'s `:release-tasks`.
