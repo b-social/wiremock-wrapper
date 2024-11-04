@@ -68,14 +68,14 @@
 
 (defn configure-mocks-on
   [wire-mock-server-atom mocks]
-  (doseq [mock mocks]
-    (let [response (-> (mappings-url @wire-mock-server-atom)
-                       (http/post {:body (->wire-json mock)})
-                       (deref))]
-      (when-not (= (:status response) 201)
-        (->> response
-             (ex-info "Error while adding mapping to WireMock server")
-             (throw))))))
+  (mapv (fn [mock]
+          (let [response (-> (mappings-url @wire-mock-server-atom)
+                             (http/post {:body (->wire-json mock)})
+                             (deref))]
+            (when-not (= (:status response) 201)
+              (->> response
+                   (ex-info "Error while adding mapping to WireMock server")
+                   (throw))))) mocks))
 
 (defn get-mappings-from [wire-mock-server]
   (let [response @(http/get (mappings-url wire-mock-server))
