@@ -75,7 +75,8 @@
             (when-not (= (:status response) 201)
               (->> response
                    (ex-info "Error while adding mapping to WireMock server")
-                   (throw))))) mocks))
+                   (throw)))
+            (<-wire-json (:body response)))) mocks))
 
 (defn get-mappings-from [wire-mock-server]
   (let [response @(http/get (mappings-url wire-mock-server))
