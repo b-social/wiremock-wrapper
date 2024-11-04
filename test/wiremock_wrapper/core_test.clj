@@ -38,8 +38,7 @@
                 :response {:status 201}}])]
         (is (= 3 (count stubs)))
         (is (= #{"id" "request" "response" "uuid"}
-               (set (keys (first stubs)))))
-        )
+               (set (keys (first stubs))))))
 
       @(http-kit/get (str wire-mock-address url-1))
 
