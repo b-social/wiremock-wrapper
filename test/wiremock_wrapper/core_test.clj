@@ -22,19 +22,23 @@
           unmatched-url "/unmatched-url"
           param "param"
           value "value"]
-      (wiremock-wrapper/configure-mocks-on
-        wire-mock-server-atom
-        [{:request {:method "GET"
-                    :url    url-1}
-          :response {:status 200}}
-         {:request {:method          "GET"
-                    :urlPathPattern  url-2
-                    :queryParameters {:random-param {:equalTo param}}}
-          :response {:status 200}}
-         {:request {:method       "POST"
-                    :url          url-3
-                    :bodyPatterns [{:equalToJson {:random value}}]}
-          :response {:status 201}}])
+      (let [stubs
+            (wiremock-wrapper/configure-mocks-on
+              wire-mock-server-atom
+              [{:request {:method "GET"
+                          :url url-1}
+                :response {:status 200}}
+               {:request {:method "GET"
+                          :urlPathPattern url-2
+                          :queryParameters {:random-param {:equalTo param}}}
+                :response {:status 200}}
+               {:request {:method "POST"
+                          :url url-3
+                          :bodyPatterns [{:equalToJson {:random value}}]}
+                :response {:status 201}}])]
+        (is (= 3 (count stubs)))
+        (is (= #{"id" "request" "response" "uuid"}
+               (set (keys (first stubs))))))
 
       @(http-kit/get (str wire-mock-address url-1))
 
