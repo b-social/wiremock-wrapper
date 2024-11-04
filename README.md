@@ -7,7 +7,7 @@ A Clojure library that wraps the wiremock Java library
 Add the following to your `project.clj` file:
 
 ```clj
-[b-social/wiremock-wrapper "0.2.6"]
+[b-social/wiremock-wrapper "0.2.7"]
 ```
 
 ## Documentation
