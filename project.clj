@@ -3,7 +3,7 @@
   :url "https://github.com/b-social/wiremock-wrapper"
   :license {:name "The MIT License"
             :url  "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.10.0"]
+  :dependencies [[org.clojure/clojure "1.11.2"]
                  [http-kit "2.3.0"]
                  [freeport "1.0.0"]
                  [b-social/jason "0.1.5"]
